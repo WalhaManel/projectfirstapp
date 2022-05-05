@@ -3,11 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 void main() async {
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,11 +23,13 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key key}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   List<Contact> contacts;
   @override
@@ -33,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     getContact();
   }
+
   void getContact() async {
     if (await FlutterContacts.requestPermission()) {
       contacts = await FlutterContacts.getContacts(
@@ -41,12 +47,13 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {});
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            "***  App Name  ***",
+            "***  Contacts  ***",
             style: TextStyle(color: Colors.blue),
           ),
           centerTitle: true,
@@ -56,23 +63,57 @@ class _MyHomePageState extends State<MyHomePage> {
         body: (contacts) == null
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(
-          itemCount: contacts.length,
-          itemBuilder: (BuildContext context, int index) {
-            Uint8List image = contacts[index].photo;
-            String num = (contacts[index].phones.isNotEmpty) ? (contacts[index].phones.first.number) : "--";
-            return ListTile(
-                leading: (contacts[index].photo == null)
-                    ? const CircleAvatar(child: Icon(Icons.person))
-                    : CircleAvatar(backgroundImage: MemoryImage(image)),
-                title: Text(
-                    "${contacts[index].name.first} ${contacts[index].name.last}"),
-                subtitle: Text(num),
-                onTap: () {
-                  if (contacts[index].phones.isNotEmpty) {
-                    launch('tel: ${num}');
-                  }
-                });
-          },
-        ));
+                itemCount: contacts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Uint8List image = contacts[index].photo;
+                  String num = (contacts[index].phones.isNotEmpty)
+                      ? (contacts[index].phones.first.number)
+                      : "--";
+                  return Dismissible(
+                    key: UniqueKey(),
+                    onDismissed: (DismissDirection direction) async {
+
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Delete Confirmation"),
+                            content: const Text("Are you sure you want to delete this item?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: (){
+
+                                    Navigator.of(context).pop(true);
+                                    contacts.removeAt(index);
+                          } ,
+                                  child: const Text("Delete"),
+
+                              ),
+                              FlatButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text("Cancel"),
+                              ),
+                            ],
+                          );
+                        },
+
+                      );
+
+                    },
+                    child: ListTile(
+                        leading: (contacts[index].photo == null)
+                            ? const CircleAvatar(child: Icon(Icons.person))
+                            : CircleAvatar(backgroundImage: MemoryImage(image)),
+                        title: Text(
+                            "${contacts[index].name.first} ${contacts[index].name.last}"),
+                        subtitle: Text(num),
+                        onTap: () {
+                          if (contacts[index].phones.isNotEmpty) {
+                            launch('tel: ${num}');
+                          }
+                        }),
+                  );
+                },
+              ));
   }
 }
