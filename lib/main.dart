@@ -80,16 +80,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             title: const Text("Delete Confirmation"),
                             content: const Text("Are you sure you want to delete this item?"),
                             actions: <Widget>[
-                              FlatButton(
+                              ElevatedButton(
                                   onPressed: (){
-
                                     Navigator.of(context).pop(true);
-                                    contacts.removeAt(index);
+                                    setState(() {
+                                      contacts.removeAt(index);
+                                    });
                           } ,
                                   child: const Text("Delete"),
 
                               ),
-                              FlatButton(
+                              ElevatedButton(
                                 onPressed: () => Navigator.of(context).pop(false),
                                 child: const Text("Cancel"),
                               ),
