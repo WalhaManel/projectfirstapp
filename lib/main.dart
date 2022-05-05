@@ -7,7 +7,7 @@ void main() async {
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,12 +21,12 @@ class MyApp extends StatelessWidget {
   }
 }
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key key}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
-  List<Contact>? contacts;
+  List<Contact> contacts;
   @override
   void initState() {
     // TODO: implement initState
@@ -56,19 +56,19 @@ class _MyHomePageState extends State<MyHomePage> {
         body: (contacts) == null
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(
-          itemCount: contacts!.length,
+          itemCount: contacts.length,
           itemBuilder: (BuildContext context, int index) {
-            Uint8List? image = contacts![index].photo;
-            String num = (contacts![index].phones.isNotEmpty) ? (contacts![index].phones.first.number) : "--";
+            Uint8List image = contacts[index].photo;
+            String num = (contacts[index].phones.isNotEmpty) ? (contacts[index].phones.first.number) : "--";
             return ListTile(
-                leading: (contacts![index].photo == null)
+                leading: (contacts[index].photo == null)
                     ? const CircleAvatar(child: Icon(Icons.person))
-                    : CircleAvatar(backgroundImage: MemoryImage(image!)),
+                    : CircleAvatar(backgroundImage: MemoryImage(image)),
                 title: Text(
-                    "${contacts![index].name.first} ${contacts![index].name.last}"),
+                    "${contacts[index].name.first} ${contacts[index].name.last}"),
                 subtitle: Text(num),
                 onTap: () {
-                  if (contacts![index].phones.isNotEmpty) {
+                  if (contacts[index].phones.isNotEmpty) {
                     launch('tel: ${num}');
                   }
                 });
