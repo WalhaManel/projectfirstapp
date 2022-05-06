@@ -21,8 +21,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  bloc:
-  flutter_bloc:
   flutter_contacts:
   url_launcher:
   flutter:
